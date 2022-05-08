@@ -44,7 +44,10 @@ class Graph:
 
         neighbors = self.adj_list[init_post]
         for vertex in visited:
-            neighbors.remove(vertex)
+            try:
+                neighbors.remove(vertex)
+            except:
+                continue
         if len(neighbors) == 0:
             return dict()
         else:
@@ -53,16 +56,16 @@ class Graph:
             chance_sum = 0
             for i in range(len(neighbors)):
                 chance[i] = (self.phero_matrix[init_post][neighbors[i]]**self.alpha) * \
-                            (self.weight_matrix[[init_post][neighbors[i]]]**self.beta)
+                            (self.weight_matrix[init_post][neighbors[i]]**self.beta)
                 chance_sum += chance[i]
             for i in range(len(neighbors)):
                 chance[i] = (chance[i]*random[i])/chance_sum
-            next_move = int(np.where(chance == np.amax(chance)))
+            next_move = neighbors[int(np.where(chance == np.amax(chance))[0])]
             if init_post < next_move:
                 phero_changes[(init_post, next_move)] = self.Qui * self.weight_matrix[init_post][next_move]
             else:
                 phero_changes[(next_move, init_post)] = self.Qui * self.weight_matrix[init_post][next_move]
-            return self.traveling_ant(self, next_move, phero_changes, visited)
+            return self.traveling_ant(next_move, phero_changes, visited)
 
     """Update pheromone function"""
     def update_pheromone(self, phero_changes):
@@ -82,8 +85,8 @@ class Graph:
         result = []
         for i in self.edge_list:
             result.append((i[0], i[1], self.phero_matrix[i[0]][i[1]]))
-        result.sort(reverse=True, key=lambda y: y[1])
-        result = result[:self.verticles_no]
+        result.sort(reverse=True, key=lambda y: y[2])
+        #result = result[:self.verticles_no]
         return result
 
 
@@ -91,7 +94,7 @@ def ant_solver(graph, iteration):
     while graph.iteration < iteration:
         phero_changes = dict()
         for i in range(graph.verticles_no):
-            temp_changes = graph.traveling_ant(graph, i, dict(), list())
+            temp_changes = graph.traveling_ant(i, dict(), list())
             for k in temp_changes:
                 if k in phero_changes:
                     phero_changes[k] += temp_changes[k]
