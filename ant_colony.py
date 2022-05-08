@@ -5,7 +5,7 @@ Ant colony algorithm
 """
 import numpy as np
 
-
+"""Init, phi and all weights has to be float"""
 class Graph:
     def __init__(self, weight_matrix, alpha, beta, phi, init, qui):
         self.alpha = alpha
@@ -13,23 +13,19 @@ class Graph:
         self.phi = phi
         self.Qui = qui
         shape = np.shape(weight_matrix)
-        phero_matrix = np.zeros(shape)
-        edge_list = []
         adj_list = dict()
-        for x in range(shape[0]):
-            for y in range(x + 1, shape[0]):
-                if weight_matrix[x][y] != 0:
-                    if x not in adj_list:
-                        adj_list[x] = []
-                    if y not in adj_list:
-                        adj_list[y] = []
-                    adj_list[x].append(y)
-                    adj_list[y].append(x)
-                    phero_matrix[x][y] = init
-                    phero_matrix[y][x] = init
-                    edge_list.append((x, y))
+        edge_list = np.argwhere(weight_matrix>0)
+        edge_list.sort()
+        edge_list = np.unique(edge_list, axis=0)
+        for edge in edge_list:
+            if edge[0] not in adj_list:
+                adj_list[edge[0]] = []
+            if edge[1] not in adj_list:
+                adj_list[edge[1]] = []
+            adj_list[edge[0]].append(edge[1])
+            adj_list[edge[1]].append(edge[0])
         self.weight_matrix = np.power(weight_matrix, -1)
-        self.phero_matrix = phero_matrix
+        self.phero_matrix = np.where(weight_matrix != 0, float(init), 0)
         self.edge_list = edge_list
         self.adj_list = adj_list
         self.verticles_no = shape[0]
@@ -55,13 +51,11 @@ class Graph:
         else:
             chance = np.empty(len(neighbors))
             random = np.random.rand(len(neighbors))
-            chance_sum = 0
             for i in range(len(neighbors)):
                 chance[i] = (self.phero_matrix[init_post][neighbors[i]] ** self.alpha) * \
                             (self.weight_matrix[init_post][neighbors[i]] ** self.beta)
-                chance_sum += chance[i]
-            for i in range(len(neighbors)):
-                chance[i] = (chance[i] * random[i]) / chance_sum
+            chance_sum = np.sum(chance)
+            chance = chance * random / chance_sum
             next_move = neighbors[int(np.where(chance == np.amax(chance))[0])]
             if init_post < next_move:
                 phero_changes[(init_post, next_move)] = self.Qui * self.weight_matrix[init_post][next_move]
@@ -72,9 +66,7 @@ class Graph:
     """Update pheromone function"""
 
     def update_pheromone(self, phero_changes):
-        for i in self.edge_list:
-            self.phero_matrix[i[0]][i[1]] *= (1 - self.phi)
-            self.phero_matrix[i[1]][i[0]] *= (1 - self.phi)
+        self.phero_matrix *= (1 - self.phi)
         for i in phero_changes:
             self.phero_matrix[i[0]][i[1]] += phero_changes[i]
             self.phero_matrix[i[1]][i[0]] += phero_changes[i]
