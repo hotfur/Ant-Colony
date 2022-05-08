@@ -42,7 +42,7 @@ class Graph:
         if len(visited) == self.verticles_no:
             return phero_changes
 
-        neighbors = self.adj_list[init_post]
+        neighbors = list(self.adj_list[init_post])
         for vertex in visited:
             try:
                 neighbors.remove(vertex)
@@ -86,7 +86,7 @@ class Graph:
         for i in self.edge_list:
             result.append((i[0], i[1], self.phero_matrix[i[0]][i[1]]))
         result.sort(reverse=True, key=lambda y: y[2])
-        #result = result[:self.verticles_no]
+        result = result[:self.verticles_no]
         return result
 
 
