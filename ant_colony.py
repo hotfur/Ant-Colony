@@ -68,7 +68,7 @@ class Graph:
         """
         visited.append(init_post)
         if len(visited) == self.verticles_no:
-            # Base case 1: exist an edge between the last and first verticles in the tour
+            # Base case 1: exist an edge between the last and first vertices in the tour
             if self.phero_matrix[init_post][visited[0]] != 0:
                 if init_post < visited[0]:
                     phero_changes[(init_post, visited[0])] = 1

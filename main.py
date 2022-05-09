@@ -1,5 +1,7 @@
 import ant_colony
 import numpy as np
+import big_graph as bg
+import sys, time
 
 
 def ant_solver(graph, iteration):
@@ -50,3 +52,49 @@ if __name__ == '__main__':
     graph01 = ant_colony.Graph(matrix, 2, 3, 0.1, 3, 5)
     edges = ant_solver(graph01, 10)
     print(edges)
+
+    # Big Graph testing
+    # Set recursion limit to allow big graph test
+    sys.setrecursionlimit(999999)
+
+    print("Dense 50 vertices graph: ")
+    matrix = bg.big_graph(50, 0.9)
+    start_time = time.time()
+    graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
+    edges = ant_solver(graph01, 5)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+    print("Sparse 50 vertices graph: ")
+    matrix = bg.big_graph(50, 0.3)
+    start_time = time.time()
+    graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
+    edges = ant_solver(graph01, 5)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+    print("Dense 100 vertices graph: ")
+    matrix = bg.big_graph(100, 0.9)
+    start_time = time.time()
+    graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
+    edges = ant_solver(graph01, 5)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+    print("Sparse 100 vertices graph: ")
+    matrix = bg.big_graph(100, 0.3)
+    start_time = time.time()
+    graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
+    edges = ant_solver(graph01, 5)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+    print("Dense 200 vertices graph: ")
+    matrix = bg.big_graph(200, 0.9)
+    start_time = time.time()
+    graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
+    edges = ant_solver(graph01, 5)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+    print("Sparse 200 vertices graph: ")
+    matrix = bg.big_graph(200, 0.3)
+    start_time = time.time()
+    graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
+    edges = ant_solver(graph01, 5)
+    print("--- %s seconds ---" % (time.time() - start_time))
