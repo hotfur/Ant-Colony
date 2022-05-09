@@ -56,58 +56,6 @@ class Graph:
         self.verticles_no = shape[0]
         self.iteration = 0
 
-    def traveling_ant(self, init_post, phero_changes, visited):
-        """
-        Recursive traveling ant function to deposits pheromone
-
-        :argument init_post: the ant starting vertex
-        :argument phero_changes: the pheromone changes dictionary
-        :argument visited: the visited vertices list
-        :returns: empty pheromone change dictionary if the ant failed to complete a tour, or a complete pheromone
-        changes dictionary for successful tours
-        """
-        visited.append(init_post)
-        if len(visited) == self.verticles_no:
-            # Base case 1: exist an edge between the last and first vertices in the tour
-            if self.phero_matrix[init_post][visited[0]] != 0:
-                if init_post < visited[0]:
-                    phero_changes[(init_post, visited[0])] = 1
-                else:
-                    phero_changes[(visited[0], init_post)] = 1
-                return phero_changes
-            # Base case 2: All vertex has been visited, but there is no way to return to the starting point.
-            return dict()
-
-        # Eliminate all visited vertices from the list of possible candidates for the ant to visit
-        neighbors = list(self.adj_list[init_post])
-        for vertex in visited:
-            try:
-                neighbors.remove(vertex)
-            except:
-                continue
-        # Base case 3: only a fraction of the vertex has been visited and there is no way to continue moving unless we
-        # visit a vertex more than once.
-        if len(neighbors) == 0:
-            return dict()
-
-        # Recursive case
-        else:
-            # This array stores the chance that the ant will visits its neighbors
-            chance = np.empty(len(neighbors))
-            random = np.random.rand(len(neighbors))
-            for i in range(len(neighbors)):
-                chance[i] = (self.phero_matrix[init_post][neighbors[i]] ** self.alpha) * \
-                            (self.weight_matrix[init_post][neighbors[i]] ** self.beta)
-            chance_sum = np.sum(chance)
-            chance = chance * random / chance_sum
-            next_move = neighbors[int(np.where(chance == np.amax(chance))[0])]
-            # We want the edges to be in order where first vertex is always the smaller numbered one
-            if init_post < next_move:
-                phero_changes[(init_post, next_move)] = 1
-            else:
-                phero_changes[(next_move, init_post)] = 1
-            return self.traveling_ant(next_move, phero_changes, visited)
-
     def update_pheromone(self, phero_changes):
         """Update pheromone function
 
@@ -131,3 +79,67 @@ class Graph:
         result.sort(reverse=True, key=lambda y: y[2])
         result = result[:self.verticles_no]
         return result
+
+
+def traveling_ant(graph, init_post, phero_changes, visited):
+    """
+    Recursive traveling ant function to deposits pheromone
+
+    :argument init_post: the ant starting vertex
+    :argument phero_changes: the pheromone changes dictionary
+    :argument visited: the visited vertices list
+    :returns: empty pheromone change dictionary if the ant failed to complete a tour, or a complete pheromone
+    changes dictionary for successful tours
+    """
+    visited.append(init_post)
+    if len(visited) == graph.verticles_no:
+        # Base case 1: exist an edge between the last and first vertices in the tour
+        if graph.phero_matrix[init_post][visited[0]] != 0:
+            if init_post < visited[0]:
+                phero_changes[(init_post, visited[0])] = 1
+            else:
+                phero_changes[(visited[0], init_post)] = 1
+            return phero_changes
+        # Base case 2: All vertex has been visited, but there is no way to return to the starting point.
+        return dict()
+
+    # Eliminate all visited vertices from the list of possible candidates for the ant to visit
+    neighbors = list(graph.adj_list[init_post])
+    for vertex in visited:
+        try:
+            neighbors.remove(vertex)
+        except:
+            continue
+    # Base case 3: only a fraction of the vertex has been visited and there is no way to continue moving unless we
+    # visit a vertex more than once.
+    if len(neighbors) == 0:
+        return dict()
+
+    # Recursive case
+    else:
+        # This array stores the chance that the ant will visits its neighbors
+        chance = np.empty(len(neighbors))
+        random = np.random.rand(len(neighbors))
+        for i in range(len(neighbors)):
+            chance[i] = (graph.phero_matrix[init_post][neighbors[i]] ** graph.alpha) * \
+                        (graph.weight_matrix[init_post][neighbors[i]] ** graph.beta)
+        chance_sum = np.sum(chance)
+        chance = chance * random / chance_sum
+        next_move = neighbors[int(np.where(chance == np.amax(chance))[0])]
+        # We want the edges to be in order where first vertex is always the smaller numbered one
+        if init_post < next_move:
+            phero_changes[(init_post, next_move)] = 1
+        else:
+            phero_changes[(next_move, init_post)] = 1
+        return traveling_ant(graph, next_move, phero_changes, visited)
+
+
+def travelling_ant_warpper(graph, init_position):
+    """
+    A wrapper for calling travelling ant function with only 2 parameters
+    :param graph: the graph to operate on
+    :param init_position: the initial position of the ant
+    :return: empty pheromone change dictionary if the ant failed to complete a tour, or a complete pheromone
+    changes dictionary for successful tours
+    """
+    return traveling_ant(graph, init_position, dict(), list())
