@@ -26,7 +26,7 @@ class Graph:
         :param phi: pheromone evaporation constant, has to be a float and smaller than 1
         :param init: the pheromone value to initialize the pheromone matrix, has to be a float
         :param qui: constant adjusting the power of edges' weight in updating the pheromone deposition
-        :return an object which contains the inverted weight matrix, a pheromone matrix initialized with same pheromone
+        :return: an object which contains the inverted weight matrix, a pheromone matrix initialized with same pheromone
         level, an edge list and an adjacency list for faster calculation in other methods.
         """
         self.alpha = alpha
@@ -62,7 +62,7 @@ class Graph:
 
         :argument init_post: the ant starting vertex
         :argument phero_changes: the pheromone changes dictionary
-        :argument visited: he visited vertices list
+        :argument visited: the visited vertices list
         :returns: empty pheromone change dictionary if the ant failed to complete a tour, or a complete pheromone
         changes dictionary for successful tours
         """
