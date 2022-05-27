@@ -24,4 +24,4 @@ def big_graph(vertices, density):
 
 """TEST CASE"""
 
-print(big_graph(4,0.1))
+#print(big_graph(4,0.1))
