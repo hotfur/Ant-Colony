@@ -83,9 +83,16 @@ if __name__ == '__main__':
     edges = ant_solver(graph01, 10)
     print(edges)
 
-    print("5 vertices and some edges not available: ")
+    print("5 vertices and has closed eulerian tour: ")
     matrix = np.array([[0., 7., 0., 15., 23.], [7., 0, 7., 5., 9.], [0., 7., 0., 2., 0.], [15., 5., 2., 0., 3.],
                        [23., 9., 0., 3., 0.]])
+    graph01 = ant_colony.Graph(matrix, 2, 3, 0.1, 3, 5)
+    edges = ant_solver(graph01, 10)
+    print(edges)
+
+    print("5 vertices and no eulerian tour: ")
+    matrix = np.array([[0., 3., 0., 0., 0.], [3., 0, 4., 0., 6.], [0., 4., 0., 4., 0.], [0., 0., 4., 0., 5.],
+                       [0., 6., 0., 5., 0.]])
     graph01 = ant_colony.Graph(matrix, 2, 3, 0.1, 3, 5)
     edges = ant_solver(graph01, 10)
     print(edges)
@@ -143,29 +150,15 @@ if __name__ == '__main__':
     edges = ant_solver(graph01, 5)
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    print("Dense 1000 vertices graph: ")
-    matrix = bg.big_graph(1000, 0.9)
+    print("Dense 400 vertices graph: ")
+    matrix = bg.big_graph(400, 0.9)
     start_time = time.time()
     graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
     edges = ant_solver(graph01, 5)
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    print("Sparse 1000 vertices graph: ")
-    matrix = bg.big_graph(1000, 0.3)
-    start_time = time.time()
-    graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
-    edges = ant_solver(graph01, 5)
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-    print("Dense 10000 vertices graph: ")
-    matrix = bg.big_graph(10000, 0.9)
-    start_time = time.time()
-    graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
-    edges = ant_solver(graph01, 5)
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-    print("Sparse 10000 vertices graph: ")
-    matrix = bg.big_graph(10000, 0.3)
+    print("Sparse 400 vertices graph: ")
+    matrix = bg.big_graph(400, 0.3)
     start_time = time.time()
     graph01 = ant_colony.Graph(matrix, 1.2, 1.4, 0.3, 3, 5)
     edges = ant_solver(graph01, 5)

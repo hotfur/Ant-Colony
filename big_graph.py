@@ -11,7 +11,7 @@ def big_graph(vertices, density):
     """
     Generate a very big graph for use with TSP Ant Colony algorithm
     :param vertices: the number of vertices of the graph
-    :param density: the density of the graph from 0 to 1. 1 is a graph with n^2 edges and 0 is a graph with no vertex
+    :param density: the density of the graph from 0 to 1. 1 is a graph with n^2 edges and 0 is a graph with no edge
     :return: a numpy matrix
     """
     # Because random modify both the upper and lower halves of the matrix, thus resulting in a bias toward sparser
@@ -24,4 +24,4 @@ def big_graph(vertices, density):
 
 """TEST CASE"""
 
-#print(big_graph(10,0.8))
+print(big_graph(4,0.1))
