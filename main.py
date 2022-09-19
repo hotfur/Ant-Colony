@@ -3,10 +3,10 @@ import numpy as np
 import big_graph as bg
 import sys
 import time
-from multiprocessing import Pool
+import multiprocessing
 
 
-def parallel_ant_solver(graph, iteration):
+def ant_solver(graph, iteration):
     """
     Main solver function for TSP (multiprocessor)
     :param graph: the graph object that need to be solved
@@ -33,42 +33,6 @@ def parallel_ant_solver(graph, iteration):
                     phero_changes[edge] = ant[edge]
         graph.update_pheromone(phero_changes)
     return graph.ant_harvester()
-
-
-def serial_ant_solver(graph, iteration):
-    """
-    Main solver function for TSP (1 processor)
-    :param graph: the graph object that need to be solved
-    :param iteration: number of time the ants has to travel the graphs
-    :return: a sorted list of edges by pheromone that make up the best tour
-    """
-    while graph.iteration < iteration:
-        # This dictionary saves the pheromone deposited by all ants travelling the graph in one iteration
-        phero_changes = dict()
-        # Now let's the ants start moving on every vertices of the graph
-        for i in range(graph.verticles_no):
-            ant = ant_colony.travelling_ant_warpper(graph, i)
-            for edge in ant:
-                if edge in phero_changes:
-                    phero_changes[edge] += ant[edge]
-                else:
-                    phero_changes[edge] = ant[edge]
-        graph.update_pheromone(phero_changes)
-    return graph.ant_harvester()
-
-
-def ant_solver(graph, iteration, computation='parallel'):
-    """
-    A wrapper function for ant solver for user to choose between parallel and serial computation
-    :param graph: the graph object that need to be solved
-    :param iteration: number of time the ants has to travel the graphs
-    :param computation: "serial" or "parallel" accepted, default parallel
-    :return:
-    """
-    if computation == 'serial':
-        return serial_ant_solver(graph, iteration)
-    return parallel_ant_solver(graph, iteration)
-
 
 if __name__ == '__main__':
     print("Just a usual test case with 4 vertices: ")
