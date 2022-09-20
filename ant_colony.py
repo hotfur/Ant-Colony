@@ -12,7 +12,7 @@ class Graph:
     """
     A class for codifying graphs to solve the TSP with Ant Colony algorithm.
     One constructor for transforming the adjacency matrix to adjacency list and edge list. Three methods: a travelling
-    ant function to deposits pheromone, a update pheromone function for updating pheromone by several ants and a
+    ant function to deposits pheromone, an update pheromone function for updating pheromone by several ants and a
     harvester function for collecting the best trails left behind.
     """
     def __init__(self, weight_matrix, alpha, beta, phi, init, qui):
@@ -34,7 +34,6 @@ class Graph:
         self.phi = phi
         self.Qui = qui
         # Create an edge list
-        shape = np.shape(weight_matrix)
         edge_list = np.argwhere(weight_matrix > 0)
         edge_list.sort()
         edge_list = np.unique(edge_list, axis=0)
@@ -53,21 +52,8 @@ class Graph:
         self.phero_matrix = np.where(weight_matrix != 0, float(init), 0)
         self.edge_list = edge_list
         self.adj_list = adj_list
-        self.verticles_no = shape[0]
+        self.shape = np.shape(weight_matrix)
         self.iteration = 0
-
-    def update_pheromone(self, phero_changes):
-        """Update pheromone function
-
-        :argument phero_changes: a dictionary containing edges in which ants has travelled in their tours
-        :return: nothing
-        """
-        self.phero_matrix = np.where(self.phero_matrix != 0, self.phero_matrix*(1 - self.phi), 0)
-        for i in phero_changes:
-            self.phero_matrix[i[0]][i[1]] += phero_changes[i] * self.Qui * self.weight_matrix[i[0]][i[1]]
-            self.phero_matrix[i[1]][i[0]] += phero_changes[i] * self.Qui * self.weight_matrix[i[1]][i[0]]
-        self.iteration += 1
-        return
 
     def ant_harvester(self):
         """Harvest the TSP optimal solution by ant colony
@@ -77,7 +63,7 @@ class Graph:
         for i in self.edge_list:
             result.append((i[0], i[1], self.phero_matrix[i[0]][i[1]]))
         result.sort(reverse=True, key=lambda y: y[2])
-        result = result[:self.verticles_no]
+        result = result[:self.shape[0]]
         return result
 
 
@@ -92,7 +78,7 @@ def traveling_ant(graph, init_post, phero_changes, visited):
     changes dictionary for successful tours
     """
     visited.append(init_post)
-    if len(visited) == graph.verticles_no:
+    if len(visited) == graph.shape[0]:
         # Base case 1: exist an edge between the last and first vertices in the tour
         if graph.phero_matrix[init_post][visited[0]] != 0:
             if init_post < visited[0]:

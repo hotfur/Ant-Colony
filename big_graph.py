@@ -15,7 +15,7 @@ def big_graph(vertices, density):
     :return: a numpy matrix
     """
     # Because random modify both the upper and lower halves of the matrix, thus resulting in a bias toward sparser
-    # matrix, we has to adjust the density constant to offset this effect.
+    # matrix, we have to adjust the density constant to offset this effect.
     density = np.sqrt(density)
     matrix = np.where(np.identity(vertices) != 0, 0, np.random.rand(vertices, vertices))
     matrix *= np.random.choice([0, 1], (vertices, vertices), p=[1-density, density])
